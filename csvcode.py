@@ -2,7 +2,7 @@ import csv
 
 def readfile():
     data = []
-    with open('world-food-facts\FoodFacts.csv', newline='', encoding='utf-8') as file:
+    with open('world-food-facts\FoodFacts.csv') as file:
         for row in csv.reader(file):
             data.append(row)
     return data
