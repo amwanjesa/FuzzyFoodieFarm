@@ -44,7 +44,7 @@ def fatNsug():
                 fatPerc = sat/fat
         if sug == '':
             sug = 0
-    
-            print(prod, cat, fatPerc, sug)
 
-fatNsug()
+            print(prod, cat, fatPerc, sug)
+if __name__ == '__main__':
+    fatNsug()
