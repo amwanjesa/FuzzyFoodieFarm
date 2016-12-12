@@ -20,15 +20,16 @@ def filter_by_nutrients(labels):
 	filtered = []
 	for label in labels:
 		filtered.append(checkSimilarity(label, test_labels, filtered))
+	print filtered
 
 def checkSimilarity(nutrient, labels, filtered):
 	for nutrition in labels:
 		ratio = SequenceMatcher(None, nutrient, nutrition).ratio()
 		if ratio > 0.5:
-			if labels.index(nutrition) in filtered:
+			if nutrition in filtered:
 				continue
 			else:
-				return labels.index(nutrition)
+				return nutrition
 	return -1
 
 
