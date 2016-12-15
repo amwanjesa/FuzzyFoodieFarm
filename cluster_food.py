@@ -5,6 +5,10 @@ import pdb
 import skfuzzy as fuzz
 from difflib import SequenceMatcher
 from nutrition import nutritions
+import matplotlib.pyplot as plt
+
+colors = ['b', 'orange', 'g', 'r', 'c', 'm', 'y', 'k', 'Brown', 'ForestGreen']
+
 
 @click.command()
 @click.argument('data-filename')
@@ -16,6 +20,8 @@ def cluster(data_filename, labels_filename):
 	clf = 	fuzz.cmeans(data, c=6, m=10, error=0.0001, maxiter=2000)
 	recipe_labels = nutritions()
 	nutrient_vector = filter_by_nutrients(list(labels), recipe_labels)
+	testClustering(data, np.array(nutrient_vector))
+
 
 def filter_by_nutrients(labels, recipe):
 	recipe_labels = recipe.keys()
@@ -40,6 +46,26 @@ def checkSimilarity(nutrient, labels, filtered):
 				return nutrition
 	return -1
 
+def testClustering(train_data, test_data):
+	m = 1.1
+	ncenters = 8
+
+	cntr_train, u_train, u0, d, jm, p, fpc = fuzz.cluster.cmeans(train_data, ncenters, m, error=0.005, maxiter=1000, init=None)
+
+	cluster_membership = np.argmax(u_train, axis=0)
+
+	for x in range(ncenters):
+		plt.plot()
+		# import pdb; pdb.set_trace()
+		plt.plot(test_data[cluster_membership == x], test_data[cluster_membership == x],'.', color=colors[x])
+		print 'its working'
+
+	plt.title('Centers = {0}; FPC = {1:.2f}'.format(ncenters, fpc))
+	plt.axis('off')
+
+
+
+	plt.show()
 
 if __name__ == '__main__':
-	cluster()
+	clf, nutrient_vector, data = cluster()
