@@ -6,6 +6,7 @@ import skfuzzy as fuzz
 from difflib import SequenceMatcher
 from nutrition import nutritions
 import matplotlib.pyplot as plt
+import simplejson as json
 
 colors = ['b', 'orange', 'g', 'r', 'c', 'm', 'y', 'k', 'Brown', 'ForestGreen']
 
@@ -17,14 +18,14 @@ def cluster(data_filename, labels_filename):
 	data = np.load(data_filename)
 	labels = np.load(labels_filename)
 	data = data[:,1:]
-	clf = 	fuzz.cmeans(data, c=6, m=10, error=0.0001, maxiter=2000)
-    recipe_labels = json.load(open("recipesNutrients.txt"))
-    nutritions = []
-    for recipe in recipe_labels: 
-        nutrient_vector = filter_by_nutrients(list(labels), recipe)
-        nutritions.append(nutrient_vector)
+	clf = fuzz.cmeans(data, c=6, m=10, error=0.0001, maxiter=2000)
+	recipe_labels = json.load(open("recipesNutrients.txt"))
+	nutritions = []
+	for recipe in recipe_labels:
+		nutrient_vector = filter_by_nutrients(list(labels), recipe)
+		nutritions.append(nutrient_vector)
 
-    testClustering(data, np.array(nutritions))
+	testClustering(data, np.array(nutritions).T)
 
 
 def filter_by_nutrients(labels, recipe):
@@ -62,7 +63,6 @@ def testClustering(train_data, test_data):
 		plt.plot()
 		# import pdb; pdb.set_trace()
 		plt.plot(test_data[cluster_membership == x], test_data[cluster_membership == x],'.', color=colors[x])
-		print 'its working'
 
 	plt.title('Centers = {0}; FPC = {1:.2f}'.format(ncenters, fpc))
 	plt.axis('off')
