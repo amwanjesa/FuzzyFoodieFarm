@@ -51,6 +51,8 @@ def checkSimilarity(nutrient, labels, filtered):
 				return nutrition
 	return -1
 
+
+#The function below tests clustering the data
 def testClustering(train_data, test_data):
 	m = 1.1
 	ncenters = 6
