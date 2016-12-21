@@ -1,26 +1,26 @@
 import numpy as np
 import skfuzzy as fuzz
 import json
-import unirest 
+import unirest
 
 colors = ['b', 'orange', 'g', 'r', 'c', 'm', 'y', 'k', 'Brown', 'ForestGreen']
 
 # get the 500 random recipes
 recipesNutrients = json.load(open("recipesNutrients.txt"))
 # all the important nutrients that is needed
-all_keys = ['Caffeine', 'Calories', 'Carbohydrates', 'Cholesterol', 'Fat', 'Fiber', 'Protein', 'Saturated Fat', 'Sugar', 'Sodium']
+all_keys = ['Caffeine', 'Calories', 'Carbohydrates', 'Cholesterol', 'Fat', 'Fiber', 'Protein', 'Saturated Fat', 'Sugar', 'Sodium', 'Iron', 'Vitamin A', 'Vitamin B1', 'Vitamin B2', 'Vitamin B3', 'Vitamin B5', 'Vitamin E']
 
 def getNutrientsRecipes():
-    # create the nutrition vectors for all the 100 random recipes 
+    # create the nutrition vectors for all the 100 random recipes
     all_nutritions = []
-    for nutritions in recipesNutrients: 
+    for nutritions in recipesNutrients:
         vector = [nutritions[nut] if nut in nutritions else 0 for nut in all_keys]
         all_nutritions.append(vector)
     return np.matrix(all_nutritions)
-    
-def getPredictionNutrients(idList): 
+
+def getPredictionNutrients(idList):
     nutrition_matrix = []
-    for idRecipe in idList: 
+    for idRecipe in idList:
         idRecipe = str(idRecipe)
         url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/" + idRecipe + "/information?includeNutrition=true"
         response = unirest.get(url,
