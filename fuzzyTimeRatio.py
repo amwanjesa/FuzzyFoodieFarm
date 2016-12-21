@@ -28,7 +28,7 @@ def member_of_function(crisp_value):
         degrees.append(compute_degree(ratio, crisp_value, abcd[i]))
 
     #returning linguistic variable for highest membership degree
-    return keys[degrees.index(max(degrees))]
+    return keys[degrees.index(max(degrees))], degrees
 
 
 def compute_degree(ratio, crisp_value, abcd):
