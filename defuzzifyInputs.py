@@ -2,11 +2,11 @@ import numpy as np
 import skfuzzy as fuzz
 import heapq
 
-def defuzzify(ratio_degrees, u, activities, chosen): 
-    ratio_ample = ratio_degrees[0]
-    ratio_comfortable = ratio_degrees[1]
-    ratio_hasty = ratio_degrees[2]
-    ratio_impossible = ratio_degrees[3]
+def defuzzify(ratio_degrees, u, activities, chosen):
+    
+    ratio_comfortable = ratio_degrees[0]
+    ratio_hasty = ratio_degrees[1]
+    ratio_impossible = ratio_degrees[2]
     
     activity_postworkout = u[0]
     activity_study = u[1]
@@ -14,10 +14,11 @@ def defuzzify(ratio_degrees, u, activities, chosen):
     activity_sport = u[3]
     
     x_fit = np.arange(0, 1.1, 0.1)
-    fit_terrible = fuzz.trimf(x_fit, [0, 0, 0.25])
-    fit_bad = fuzz.trimf(x_fit, [0, 0.25, 0.5])
-    fit_decent = fuzz.trimf(x_fit, [0.25, 0.5, 0.75])
-    fit_good = fuzz.trimf(x_fit, [0.5, 1, 1])
+    
+    fit_terrible = fuzz.trapmf(x_fit, [0, 0, 0.25, 0.375])
+    fit_bad = fuzz.trapmf(x_fit, [0.25, 0.375, 0.5, 0.675])
+    fit_decent = fuzz.trapmf(x_fit, [0.5, 0.675, 0.75, 0.875])
+    fit_good = fuzz.trapmf(x_fit, [0.75, 0.875, 1, 1])
     
     
     indexChosen = activities.index(chosen)

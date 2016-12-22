@@ -27,24 +27,30 @@ def getPredictionNutrients(idRecipe):
       }
     )
     recipeInfo = response.body
+    if 'nutrition' in recipeInfo:
     # get all of the nutrition information
-    recipeNutritions = recipeInfo['nutrition']['nutrients']
-    # create dict where each key is a nutrition and its value is the value of the nutrition
-    nutritionsDict = {nutrition['title']: nutrition['percentOfDailyNeeds'] for nutrition in recipeNutritions}# if nutrition['title'] in selectedNutritions}
-    # create the nutrition vector with all of the nutrition keys so each element corresponds to the correct nutrition
-    # this is for the one prediction example
-    nutrition_vector = [nutritionsDict[nutrition] if nutrition in nutritionsDict else 0 for nutrition in all_keys]
-    return np.matrix(nutrition_vector)
+        recipeNutritions = recipeInfo['nutrition']['nutrients']
+        # create dict where each key is a nutrition and its value is the value of the nutrition
+        nutritionsDict = {nutrition['title']: nutrition['percentOfDailyNeeds'] for nutrition in recipeNutritions}# if nutrition['title'] in selectedNutritions}
+        # create the nutrition vector with all of the nutrition keys so each element corresponds to the correct nutrition
+        # this is for the one prediction example
+        nutrition_vector = [nutritionsDict[nutrition] if nutrition in nutritionsDict else 0 for nutrition in all_keys]
+        return np.matrix(nutrition_vector)
+    else: 
+        return 0
 
 #The function below tests clustering the data
-def testClustering(n_centers, m, idList):
-    test_data = getPredictionNutrients(idList)
-    # train the 100 examples
-    with open('cluster.pkl', 'rb') as f:
-        data = pickle.load(f)
-    cntr = data[0]
-    # predict one example
-    u, u0, d, jm, p, fpc = fuzz.cluster.cmeans_predict(test_data.T, cntr, m, error=0.005, maxiter=1000)
-    # get to which cluster the example belongs to
-    cluster_membership = np.argmax(u, axis=0)  # Hardening for visualization
-    return cluster_membership, u
+def testClustering(n_centers, m, idRecipe):
+    test_data = getPredictionNutrients(idRecipe)
+    if type(test_data) != int:
+        # train the 100 examples
+        with open('cluster.pkl', 'rb') as f:
+            data = pickle.load(f)
+        cntr = data[0]
+        # predict one example
+        u, u0, d, jm, p, fpc = fuzz.cluster.cmeans_predict(test_data.T, cntr, m, error=0.005, maxiter=1000)
+        # get to which cluster the example belongs to
+        cluster_membership = np.argmax(u, axis=0)  # Hardening for visualization
+        return cluster_membership, u
+    else: 
+        return 0
