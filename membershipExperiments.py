@@ -18,21 +18,21 @@ for i in array:
             [1, 1.5, 2, 2]]
 
     # Custom membership functions can be built interactively with a familiar,
-    # Pythonic API
-    ratio['comfortable'] = fuzz.trapmf(ratio.universe, abcd[0])
-    ratio['hasty'] = fuzz.trapmf(ratio.universe, abcd[1])
-    ratio['impossible'] = fuzz.trapmf(ratio.universe, abcd[2])   
-    
+    # Pythonic API 
+    ratio['comfortable'] = fuzz.gaussmf(ratio.universe, 0,1.5)
+    ratio['hasty'] = fuzz.gaussmf(ratio.universe, 1.4,0.35)
+    ratio['impossible'] = fuzz.gaussmf(ratio.universe, 2,0.75) 
    
-    ratio_comfortable = fuzz.interp_membership(ratio.universe, fuzz.trapmf(ratio.universe, abcd[0]), i)
-    ratio_hasty = fuzz.interp_membership(ratio.universe, fuzz.trapmf(ratio.universe, abcd[1]), i)
-    ratio_impossible = fuzz.interp_membership(ratio.universe, fuzz.trapmf(ratio.universe, abcd[2]) , i)
+    ratio_comfortable = fuzz.interp_membership(ratio.universe, fuzz.gaussmf(ratio.universe, 0,1.5),i)
+    ratio_hasty = fuzz.interp_membership(ratio.universe, fuzz.gaussmf(ratio.universe, 1.4,0.35),i)
+    ratio_impossible = fuzz.interp_membership(ratio.universe, fuzz.gaussmf(ratio.universe, 2,0.75),i)
         
     x_fit = np.arange(0, 1.1, 0.1)
-    fit_terrible = fuzz.gaussmf(x_fit, 0, 0.25)
-    fit_bad = fuzz.gaussmf(x_fit, 0.375, 0.25 )
-    fit_decent = fuzz.gaussmf(x_fit, 0.675, 0.25)
-    fit_good = fuzz.gaussmf(x_fit, 1, 0.25)
+    
+    fit_terrible = fuzz.trapmf(x_fit, [0, 0, 0.25, 0.375])
+    fit_bad = fuzz.trapmf(x_fit, [0.25, 0.375, 0.5, 0.675])
+    fit_decent = fuzz.trapmf(x_fit, [0.5, 0.675, 0.75, 0.875])
+    fit_good = fuzz.trapmf(x_fit, [0.75, 0.875, 1, 1])
     
     activation_rule1 = np.fmin(ratio_impossible, fit_terrible)
     activation_rule2 = np.fmin(ratio_hasty, np.fmax(fit_bad, fit_decent))
@@ -40,11 +40,11 @@ for i in array:
         
     # Aggregate all three output membership functions together
     aggregated = np.fmax(activation_rule1, np.fmax(activation_rule2, activation_rule3))
-    output = fuzz.defuzz(x_fit, aggregated, 'centroid')
+    output = fuzz.defuzz(x_fit, aggregated, 'bisector')
     y.append(output)
 
 # Plot the result in pretty 3D with alpha blending
 import matplotlib.pyplot as plt
 plt.plot(array, y)
-plt.title('centroid + trap ratio + gauss fit')
+plt.title('bisector + trap ratio + gauss fit')
 plt.show()
